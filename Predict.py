@@ -2,7 +2,7 @@ import csv
 import numpy as np
 import math
 
-abbreviations = {
+abbrevs = {
     'Alabama': 'AL',
     'Alaska': 'AK',
     'Arizona': 'AZ',
@@ -77,12 +77,9 @@ class State(object):
     def getPolls(self):
         return self.polls
     
-    def getApproval(self):
-        return self.approval
     
     def addPoll(self, poll):
         self.polls.append(poll)
-        
 
 class Poll(object):
     """
@@ -120,4 +117,15 @@ class Poll(object):
         return self.method
     
     def getMargin(self):
-        return self.Rmargin
+        return self.Rmargi
+    
+def loadStates(file):
+    """
+    Uses the provided file to load in the states to a list, and returns the list
+    """
+    statelist = []
+    with open(file, "r", encoding='utf-8-sig') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            statelist.append(State(abbrevs[row["State"]], row["Votes"]))
+    return statelist
