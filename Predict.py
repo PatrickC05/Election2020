@@ -2,6 +2,8 @@ import csv
 import numpy as np
 import math
 
+filename = 'Data/president_polls.csv'
+
 abbrevs = {
     'Alabama': 'AL',
     'Alaska': 'AK',
@@ -85,12 +87,14 @@ class Poll(object):
     """
     A poll gives a rough estimate of how the electorate in a state is thinking
     """
-    def __init__(self, pollster, start, end, state = None, sample = 0,
-                 method = None, Dpct = 0, Rpct = 0):
+    def __init__(self, poll_id, pollster, start, end, state, pop, rate, sample, method, Dpct = 0, Rpct = 0):
+        self.poll_id
         self.pollster = pollster
         self.start = start
         self.end = end
         self.state = state
+        self.rating = rate
+        self.pop = pop
         self.sample = sample
         self.N = method
         self.Dpct = Dpct
@@ -110,6 +114,9 @@ class Poll(object):
             m = "TIE"
         return self.name + " Date: " + self.start +"-" + self.end + " Result: " + m
     
+    def __eq__(self, state):
+        return self.poll_id == state.poll_id
+    
     def getState(self):
         return self.state
     
@@ -117,15 +124,26 @@ class Poll(object):
         return self.method
     
     def getMargin(self):
-        return self.Rmargi
+        return self.Rmargin
+
     
 def loadStates(file):
     """
     Uses the provided file to load in the states to a list, and returns the list
     """
-    statelist = []
+    statedict={}
     with open(file, "r", encoding='utf-8-sig') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            statelist.append(State(abbrevs[row["State"]], row["Votes"]))
-    return statelist
+            statedict[abbrevs[row["State"]]] = State(abbrevs[row["State"]], votes = row["Votes"])
+    return statedict
+
+def loadPolls(file, states):
+    with open(file, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if (row['state'] in abbrevs and row['fte_grade'] != '' and row['sponsor_candidate'] == ''
+                and row['partisan'] == '' and row['tracking'] == ''):
+                new = Poll(row['pollster'],row['start_date'],row['end_date'],row['state'],row['population'], 
+                           row['fte_grade'],int(row['sample_size']),row['methodology'])
+                    
