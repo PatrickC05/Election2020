@@ -85,6 +85,13 @@ for state in votedata:
         d = round(100*data[1]/data[2], 2)
         percentages[state].append(round(50 + (r-d)/2, 2))
 
+lastfile = "Data/2016v.csv"
+with open(lastfile, 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(["state", "votes"])
+    for state in percentages:
+        writer.writerow([state, percentages[state][4]])
+
 predictions = {}
 for state in percentages:
     s, i, r, p, std = stats.linregress(range(5), percentages[state])
