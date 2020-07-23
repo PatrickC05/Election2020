@@ -81,9 +81,9 @@ for state in abbrevs:
 for state in votedata:
     for i in range(5):
         data = votedata[state][i]
-        r = round(100*data[0]/data[2], 2)
-        d = round(100*data[1]/data[2], 2)
-        percentages[state].append(round(50 + (r-d)/2, 2))
+        r = 100*data[0]/data[2]
+        d = 100*data[1]/data[2]
+        percentages[state].append(round(r-d,2))
 
 lastfile = "Data/2016v.csv"
 with open(lastfile, 'w', newline='') as f:
