@@ -117,10 +117,10 @@ class Poll(object):
         return self.question_id == other.question_id
 
 def loadPolls(file, states):
-    polls = dict()
+    polls = {}
     for state in states:
-        polls[state] = list()
-    pending = dict()
+        polls[state] = []
+    pending = {}
     day = str(date.today()).split('-')
     with open(file, "r") as f:
         reader = csv.DictReader(f)
@@ -130,7 +130,7 @@ def loadPolls(file, states):
             intime = False
             if end != '':
                 enddate = end.split('/')
-                if (int(day[1]) - int(enddate[0]) <= 2) or (int(day[1]) - int(enddate[0] == 3 and int(day[2]) <= int(enddate[1]))):
+                if (int(day[1]) - int(enddate[0]) <= 1) or (int(day[1]) - int(enddate[0] == 2 and int(day[2]) <= int(enddate[1]))):
                     if enddate[2] == "2020" or enddate[2] == "20":
                         intime = True
                         
@@ -161,11 +161,11 @@ def getAS(polls, states):
     Uses a list of polls to get an average and standard deviation for each state
     Where output[state] = (average, standard deviation) or (None, None) if no polls are available
     """
-    ans = dict() #average, standard deviation
-    rates = {"A+":1.2, "A": 1.15, "A-": 1.1, "B+": 1.05, "B": 1, "B-": 0.95, "C+": 0.9, "C": 0.85, "C-": 0.8, "D+": 0.75, "D": 0.7, "D-": 0.65, "F": 0.6, 'A/B': 1, 'B/C': 0.8, 'C/D': 0.6}
-    pops = {"lv": 1.1, "v": 0.9, "rv": 0.8, "a": 0.75}
+    ans = {} #average, standard deviation
+    rates = {"A+":1, "A": 0.9, "A-": 0.8, "B+": 0.7, "B": 0.6, "B-": 0.5, "C+": 0.45, "C": 0.4, "C-": 0.35, "D+": 0.3, "D": 0.25, "D-": 0.2, "F": 0.1, 'A/B': 0.6, 'B/C': 0.4, 'C/D': 0.25}
+    pops = {"lv": 1, "v": 0.9, "rv": 0.8, "a": 0.75}
     methods = {'Online': 0.5, 'Automated Phone': 1, 'IVR/Online': 0.6, 'Online/IVR': 0.6, 'Live Phone': 1.2, 
-               'IVR/Text': 0.8, 'Online/Text': 0.75, 'IVR/Live Phone': 1, 'Live Phone/Online/Text': 0.75, 
+               'IVR/Text': 0.75, 'Online/Text': 0.6, 'IVR/Live Phone': 1, 'Live Phone/Online/Text': 0.75, 
                'Text': 0.8, 'Live Phone/Online': 0.8, 'Live Phone/Text': 1}
     for state in states:
         p = polls[state]
@@ -181,5 +181,3 @@ def getAS(polls, states):
         except ZeroDivisionError:
             ans[states[state]] = (None, None)
     return ans
-y = loadPolls(filename, abbrevs)
-x = getAS(y, abbrevs)

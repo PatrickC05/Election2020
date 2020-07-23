@@ -90,7 +90,7 @@ with open(lastfile, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["state", "votes"])
     for state in percentages:
-        writer.writerow([state, percentages[state][4]])
+        writer.writerow([abbrevs[state], percentages[state][4]])
 
 predictions = {}
 for state in percentages:
@@ -103,4 +103,4 @@ with open(predfile, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["state", "votes"])
     for state in predictions:
-        writer.writerow([state, predictions[state]])
+        writer.writerow([abbrevs[state], predictions[state]])
