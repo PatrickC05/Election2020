@@ -3,7 +3,6 @@ This file uses the functions in Predict.py to run a simulation
 """
 
 import numpy as np
-import math
 import csv
 from Predict import *
 import random
@@ -43,19 +42,13 @@ def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, p
     rwin = {} # Chance R win by state
     dneed = {} # Count of state wins if D wins
     rneed = {} # Count of state wins if R wins
-    sims = {} # Random number store
-    for state in statepolls:
+    avg = {} # Each state's average
+    
+    for state in scollege:
         rwin[state] = 0
         dneed[state] = 0
         rneed[state] = 0
-        p = statepolls[state]
-        if p != (None, None):
-            adjusted= statepolls[state][0]*pweight + reg[state]*(1-pweight)*rweight + last[state]*(1-pweight)*(1-rweight) + incumbent
-            sds= statepolls[state][1]
-            sims[state] = np.random.normal(adjusted, sds, trials)
-        else:
-            adjusted = reg[state]*rweight + last[state]*(1-rweight) + incumbent
-            sims[state] = adjusted
+        avg[state] = 0
     
     wins = 0
     ties = 0
@@ -63,19 +56,21 @@ def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, p
         votes = 0
         swing = round(vswing* random.random(), 5)
         statewin = {}
-        for state in sims:
-            if type(sims[state]) == float:
-                v = sims[state] + swing
+        for state in scollege:
+            p = statepolls[state]
+            if p != (None, None):
+                v = np.random.normal(statepolls[state][0]*pweight + reg[state]*(1-pweight)*rweight + last[state]*(1-pweight)*(1-rweight) +
+                                     incumbent, statepolls[state][1]) + swing
             else:
-                v = sims[state][i] + swing
+                v = reg[state]*rweight + last[state]*(1-rweight) + incumbent
             if v >= 0:
                 rwin[state] += 1
                 votes += scollege[state]
                 statewin[state] = True
             else:
                 statewin[state] = False
+            avg[state] += v
                 
-        #votes = sum([scollege[state] for state in sims if sims[state][i]])
         if votes >= 270:
             wins += 1
             for state in statewin:
@@ -92,9 +87,9 @@ def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, p
         rwin[state] /= trials
         dneed[state] /= (trials - wins - ties)
         rneed[state] /= wins
+        avg[state] /= trials
         
 
-    return (rwin, wins/trials, ties/trials, rneed, dneed)
+    return (rwin, wins/trials, ties/trials, rneed, dneed, avg)
 
-x,y,z,a,b = simulate(statepolls, reg, last, states, 10000)
-        
+x,y,z,a,b,c = simulate(statepolls, reg, last, states, 1000000)
