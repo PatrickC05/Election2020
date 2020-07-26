@@ -43,6 +43,7 @@ def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, p
     dneed = {} # Count of state wins if D wins
     rneed = {} # Count of state wins if R wins
     avg = {} # Each state's average
+    voteavg = 0
     
     for state in scollege:
         rwin[state] = 0
@@ -82,6 +83,7 @@ def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, p
             for state in statewin:
                 if not statewin[state]:
                     dneed[state] += 1
+        voteavg += votes
         
     for state in rwin:
         rwin[state] /= trials
@@ -90,16 +92,16 @@ def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, p
         avg[state] /= trials
         
 
-    return (rwin, wins/trials, ties/trials, rneed, dneed, avg)
+    return (rwin, wins/trials, ties/trials, rneed, dneed, avg, voteavg/trials)
 
-x,y,z,a,b,c = simulate(statepolls, reg, last, states, 1000000)
+x,y,z,a,b,c,d = simulate(statepolls, reg, last, states, 10000000)
 
-def export(filename,x,y,z,a,b,c):
+def export(filename,x,y,z,a,b,c,d):
     with open(filename, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(['State', 'Trump Win %', 'In Trump Win %', 'In Biden Win %', 'Average Spread'])
         for state in c:
-            writer.writerow([state, x[state], round(a[state],3), round(b[state],3), round(c[state],3)])
-        writer.writerow([y,z])
+            writer.writerow([state, round(x[state],3), round(a[state],3), round(b[state],3), round(c[state],3)])
+        writer.writerow([y,z,d])
         
-export('Results.csv', x,y,z,a,b,c)
+export('Results.csv', x,y,z,a,b,c,d)
