@@ -92,7 +92,7 @@ def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, p
 
     return (rwin, wins/trials, ties/trials, rneed, dneed, avg)
 
-x,y,z,a,b,c = simulate(statepolls, reg, last, states, 1000)
+x,y,z,a,b,c = simulate(statepolls, reg, last, states, 1000000)
 
 def export(filename,x,y,z,a,b,c):
     with open(filename, 'w') as f:
