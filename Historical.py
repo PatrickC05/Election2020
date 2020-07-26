@@ -96,7 +96,7 @@ predictions = {}
 for state in percentages:
     p1 = np.polyfit(range(5), percentages[state],2)
     p2 = np.polyfit(range(5), percentages[state],1)
-    predictions[state] = round(np.poly1d(p1)(5)*0.4+np.poly1d(p2)(5)*0.6, 2)
+    predictions[state] = round(np.poly1d(p1)(5)*0.36+np.poly1d(p2)(5)*0.64, 2)
 
 predfile = "Data/histpredictions.csv"
 with open(predfile, 'w', newline='') as f:
