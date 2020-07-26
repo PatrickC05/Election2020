@@ -38,7 +38,7 @@ statepolls = getAS(loadPolls(filename, abbrevs), abbrevs)
 reg = loadP("Data/histpredictions.csv")
 last = loadP("Data/2016v.csv")
 
-def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, pweight=.6, rweight=0.4):
+def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, pweight=.75, rweight=0.6):
     rwin = {} # Chance R win by state
     dneed = {} # Count of state wins if D wins
     rneed = {} # Count of state wins if R wins
@@ -92,4 +92,14 @@ def simulate(statepolls, reg, last, scollege, trials, incumbent=0.5, vswing=2, p
 
     return (rwin, wins/trials, ties/trials, rneed, dneed, avg)
 
-x,y,z,a,b,c = simulate(statepolls, reg, last, states, 1000000)
+x,y,z,a,b,c = simulate(statepolls, reg, last, states, 1000)
+
+def export(filename,x,y,z,a,b,c):
+    with open(filename, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(['State', 'Trump Win %', 'In Trump Win %', 'In Biden Win %', 'Average Spread'])
+        for state in c:
+            writer.writerow([state, x[state], round(a[state],3), round(b[state],3), round(c[state],3)])
+        writer.writerow([y,z])
+        
+export('Results.csv', x,y,z,a,b,c)
