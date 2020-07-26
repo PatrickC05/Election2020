@@ -19,9 +19,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      run: pip3 install -r requirements.txt
     - name: Run simulation
       run: python3 Simulate.py
 
