@@ -1,5 +1,5 @@
 import csv
-from scipy import stats
+import numpy as np
 
 abbrevs = {
     'Alabama': 'AL',
@@ -94,9 +94,9 @@ with open(lastfile, 'w', newline='') as f:
 
 predictions = {}
 for state in percentages:
-    s, i, r, p, std = stats.linregress(range(5), percentages[state])
-    #print(f"{state}: Slope: {s}, Intercept:{i}")
-    predictions[state] = round(5*s + i, 2)
+    p1 = np.polyfit(range(5), percentages[state],2)
+    p2 = np.polyfit(range(5), percentages[state],1)
+    predictions[state] = round(np.poly1d(p1)(5)*0.4+np.poly1d(p2)(5)*0.6, 2)
 
 predfile = "Data/histpredictions.csv"
 with open(predfile, 'w', newline='') as f:
